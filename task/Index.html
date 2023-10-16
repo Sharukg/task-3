@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Application</title>
+</head>
+<body>
+    <ul id="messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    <input id="message_input" autocomplete="off">
+    <button onclick="sendMessage()">Send</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script type="text/javascript">
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('message', function(message) {
+            var messages = document.getElementById('messages');
+            var li = document.createElement('li');
+            li.appendChild(document.createTextNode(message));
+            messages.appendChild(li);
+        });
+
+        function sendMessage() {
+            var message_input = document.getElementById('message_input');
+            var message = message_input.value;
+            socket.emit('message', message);
+            message_input.value = '';
+        }
+    </script>
+</body>
+</html>
